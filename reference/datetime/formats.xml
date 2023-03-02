@@ -96,7 +96,6 @@ array(1) {
   <listitem>
    <para>
     Il est déjà possible de gérer c'est cas spéciaux, mais l'utilisation de
-    It is already possible to handle the edge cases, but then you need to use
     <function>DateTimeImmutable::createFromFormat</function> est requis en
     fournissant le format voulu.
     <example>
