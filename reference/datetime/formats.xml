@@ -95,8 +95,8 @@ array(1) {
   </listitem>
   <listitem>
    <para>
-    Il est déjà possible de gérer c'est cas spéciaux, mais l'utilisation de
-    <function>DateTimeImmutable::createFromFormat</function> est requis en
+    Il est déjà possible de gérer ces cas spéciaux, mais l'utilisation de
+    <function>DateTimeImmutable::createFromFormat</function> est requise en
     fournissant le format voulu.
     <example>
      <programlisting role="php">
