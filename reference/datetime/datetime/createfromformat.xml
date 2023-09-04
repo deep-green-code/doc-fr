@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: bba15cbc755cd1a4b1e7e90bd232af10a409724d Maintainer: victor-prdh Status: ready -->
+<!-- EN-Revision: 4d13f5e4b45f699eb855a5e84736aeda2ebd142a Maintainer: victor-prdh Status: ready -->
 <!-- Reviewed: no -->
 <refentry xml:id="datetime.createfromformat" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
@@ -19,7 +19,6 @@
    <methodparam><type>string</type><parameter>datetime</parameter></methodparam>
    <methodparam choice="opt"><type class="union"><type>DateTimeZone</type><type>null</type></type><parameter>timezone</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
-
   <para>&style.procedural;</para>
   <methodsynopsis>
    <type class="union"><type>DateTime</type><type>false</type></type><methodname>date_create_from_format</methodname>
@@ -36,6 +35,11 @@
    Identique à <methodname>DateTimeImmutable::createFromFormat</methodname> 
    mais crée une instance de l'objet <classname>DateTime</classname>.
   </para>
+  <para>
+   Cette méthode, y compris les paramètres, les exemples et les considérations,
+   est documentée sur la page <link
+   linkend="datetimeimmutable.createfromformat">DateTimeImmutable::createFromFormat</link>.
+  </para>
  </refsect1>
  
  <refsect1 role="parameters">
@@ -50,6 +54,46 @@
   &reftitle.returnvalues;
   <para>
    Retourne un nouvel objet <classname>DateTime</classname>&return.falseforfailure;.
+  </para>
+ </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Cette méthode lance une <exceptionname>ValueError</exceptionname> lorsque le
+   <parameter>datetime</parameter> contient des octets NULL.
+  </para>
+ </refsect1>
+
+ <refsect1 role="changelog">
+  &reftitle.changelog;
+  <informaltable>
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.21, 8.1.8, 8.2.0</entry>
+      <entry>
+       Lance désormais une <exceptionname>ValueError</exceptionname> lorsque des octets NULL
+       sont passés dans <parameter>datetime</parameter>, ce qui était auparavant ignoré
+       silencieusement.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+ </refsect1>
+
+ <refsect1 role="examples">
+  &reftitle.examples;
+  <para>
+   Pour une série complète d'exemples, voir <link
+   linkend="datetimeimmutable.createfromformat">DateTimeImmutable::createFromFormat</link>.
   </para>
  </refsect1>
 

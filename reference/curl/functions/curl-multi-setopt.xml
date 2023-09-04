@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: b7f8c11e56ff1c57a2993e2ed7e5c5ace18637fd Maintainer: yannick Status: ready -->
+<!-- EN-Revision: 054a327c0f5802cb86c110f9b25b7caff9613f95 Maintainer: yannick Status: ready -->
 <!-- Reviewed: no -->
 <refentry xml:id="function.curl-multi-setopt" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
   <refname>curl_multi_setopt</refname>
-  <refpurpose>Définit une option pour le gestionnaire multiple cURL</refpurpose>
+  <refpurpose>Définit une option multiple cURL</refpurpose>
  </refnamediv>
  
  <refsect1 role="description">
@@ -17,24 +17,15 @@
    <methodparam><type>mixed</type><parameter>value</parameter></methodparam>
   </methodsynopsis>
   <para>
-   
+   Définit une option sur le gestionnaire multi cURL donnée.
   </para>
-  
-  &warn.undocumented.func;
   
  </refsect1>
  
  <refsect1 role="parameters">
   &reftitle.parameters;
   <variablelist>
-   <varlistentry>
-    <term><parameter>multi_handle</parameter></term>
-    <listitem>
-     <para>
-      
-     </para>
-    </listitem>
-   </varlistentry>
+   &curl.mh.description;
    <varlistentry>
     <term><parameter>option</parameter></term>
     <listitem>
@@ -103,6 +94,16 @@
            <entry valign="top">
             Passe un nombre qui définit le seuil de la taille pour les pénalités
             de pipelining en octets.
+           </entry>
+          </row>
+          <row>
+           <entry valign="top"><constant>CURLMOPT_MAX_CONCURRENT_STREAMS</constant></entry>
+           <entry valign="top">
+            Le nombre défini sera utilisé comme le nombre maximal de flux simultanés pour une
+            connexion que cURL devrait prendre en charge sur les connexions effectuées à l'aide de HTTP/2.
+            Les valeurs valides vont de <literal>1</literal> à <literal>2147483647</literal> (<literal>2^31 - 1</literal>).
+            La valeur transmise ici sera respectée en fonction des autres propriétés des ressources du système.
+            La valeur par défaut est <literal>100</literal>.
            </entry>
           </row>
           <row>
@@ -194,6 +195,12 @@
       </row>
      </thead>
      <tbody>
+      <row>
+       <entry>8.2.0</entry>
+       <entry>
+        Ajout de <constant>CURLMOPT_MAX_CONCURRENT_STREAMS</constant>.
+       </entry>
+      </row>
       &curl.changelog.multi-handle-param;
       <row>
        <entry>7.1.0</entry>

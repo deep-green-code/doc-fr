@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 082ddc19f53e6e254010de1a1fbbe485ff744ec1 Maintainer: yannick Status: ready -->
+<!-- EN-Revision: 71b1e926631d5f5bec9b2e2685553453349ae799 Maintainer: yannick Status: ready -->
 <!-- Reviewed: no -->
 <!-- Relecture des Notes, Précautions, Avertissements, Astuces, Divers et Retour le 2018-12-29 par girgias -->
 
@@ -36,6 +36,28 @@ de nombres aléatoires est initialisé automatiquement.</entry></row>'>
   avec le moteur <classname>Random\Engine\Secure</classname>. Pour des cas d&#39;usage simple, les fonctions
   <function>random_int</function> et <function>random_bytes</function> fournissent une <acronym>API</acronym>
    pratique et sûre qui est qui est soutenu par le <acronym>CSPRNG</acronym> du système d&#39;exploitation.
+ </para>
+</caution>'>
+
+<!ENTITY caution.mt19937-tiny-seed '<caution xmlns="http://docbook.org/ns/docbook">
+ <para>
+  Étant donné que le moteur Mt19937 ("Mersenne Twister") prend un seul entier de 32 bits en tant que
+  graine, le nombre de séquences aléatoires possibles est limité à seulement 2<superscript>32</superscript>
+  (par exemple 4 294 967 296), malgré la période énorme de Mt19937 de 2<superscript>19937</superscript>-1.
+ </para>
+ <para>
+  Quand on se fie à une graine aléatoire implicite ou explicite, les duplications apparaîtront
+  beaucoup plus tôt. Les graines dupliquées sont attendues avec une probabilité de 50&#37; après moins de
+  80 000 graines générées aléatoirement selon le problème d anniversaire. Une probabilité de 10&#37;
+  d une graine dupliquée se produit après avoir généré environ 30 000 graines de manière aléatoire.
+ </para>
+ <para>
+  Cela rend Mt19937 inadapté aux applications où les séquences dupliquées ne doivent pas se produire avec
+  plus qu une probabilité négligeable. Si une graine reproductible est requise, à la fois le
+  moteur <classname>Random\Engine\Xoshiro256StarStar</classname> et <classname>Random\Engine\PcgOneseq128XslRr64</classname>
+  supportent des graines beaucoup plus grandes qui sont peu susceptibles de se heurter de manière aléatoire. Si la reproductibilité
+  n&apos;est pas requise, le moteur <classname>Random\Engine\Secure</classname> fournit des données aléatoires cryptographiquement
+  sécurisées.
  </para>
 </caution>'>
 
@@ -361,6 +383,10 @@ xmlns="http://docbook.org/ns/docbook"><simpara>
  Cette fonction est <emphasis>OBSOLÈTE</emphasis> à partir de PHP 8.0.0.
  Dépendre de cette fonction est fortement déconseillé.
 </simpara></warning>'>
+
+<!ENTITY warn.feature.removed-8-0-0 '<warning xmlns="http://docbook.org/ns/docbook">
+<simpara>Cette fonctionnalité a été <emphasis>SUPPRIMÉE</emphasis> à partir de PHP 8.0.0.</simpara>
+</warning>'>
 
 <!ENTITY warn.deprecated.function-8-1-0 '<warning xmlns="http://docbook.org/ns/docbook"><simpara>
  Cette fonction est <emphasis>OBSOLÈTE</emphasis> à partir de PHP 8.1.0.
@@ -725,6 +751,20 @@ Il est fortement recommandé de les éviter.</simpara></warning>
 </varlistentry>
 '>
 
+<!ENTITY sort.callback.description '<para xmlns="http://docbook.org/ns/docbook">
+&return.callbacksort;
+</para>
+&callback.cmp;
+<caution xmlns="http://docbook.org/ns/docbook">
+<para>
+Retourner des valeurs <emphasis>non-entières</emphasis> à partir de la fonction
+de comparaison, telles que <type>float</type>, entraînera une conversion interne
+de la valeur de retour du rappel en <type>int</type>. Ainsi, des valeurs telles que
+<literal>0.99</literal> et <literal>0.1</literal> seront toutes deux converties en une
+valeur entière de <literal>0</literal>, ce qui comparera de telles valeurs comme égales.
+</para>
+</caution>'>
+
 <!ENTITY ini.shorthandbytes '<simpara xmlns="http://docbook.org/ns/docbook">Lorsqu&#39;un &integer; est utilisé,
 sa valeur est mesurée en octets. Vous pouvez également utiliser la notation sténographique
 comme décrit dans cette
@@ -760,6 +800,8 @@ dossier PHP dans le dossier système Windows fonctionne également (car le dossi
 <!ENTITY resource '<link xmlns="http://docbook.org/ns/docbook" linkend="language.types.resource">ressource</link>'>
 
 <!ENTITY foreach '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.foreach">foreach</link>'>
+
+<!ENTITY match '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.match">match</link>'>
 
 <!ENTITY yield '<link xmlns="http://docbook.org/ns/docbook" linkend="control-structures.yield">yield</link>'>
 
@@ -803,9 +845,17 @@ de ce manuel pour une description des <literal xmlns="http://docbook.org/ns/docb
 <!ENTITY standard.changelog.calling-on-objects '<row xmlns="http://docbook.org/ns/docbook">
  <entry>8.1.0</entry>
  <entry>
-  Appeler cette fonction sur les &object;s est obsolète.
-  Utilisez soit <function>get_mangled_object_vars</function> sur l&apos;&object; d&apos;abord,
-  ou utilisez <classname>ArrayIterator</classname>.
+  Soit convertir l&#39;&object; en un &array; en utilisant <function>get_mangled_object_vars</function> d&#39;abord,
+  ou utiliser les méthodes fournies par une classe qui implémente <interfacename>Iterator</interfacename>, telle que
+  <classname>ArrayIterator</classname>.
+ </entry>
+</row>
+<row xmlns="http://docbook.org/ns/docbook">
+ <entry>7.4.0</entry>
+ <entry>
+  À partir de PHP 7.4.0, les instances de classes <link xmlns="http://docbook.org/ns/docbook" linkend="book.spl">SPL</link> sont traitées comme
+  des objets vides sans propriétés au lieu d&#39;appeler la méthode <interfacename>Iterator</interfacename> avec
+  le même nom que cette fonction.
  </entry>
 </row>
 '>
@@ -899,29 +949,29 @@ de ce manuel pour une description des <literal xmlns="http://docbook.org/ns/docb
 <term><parameter>fontfile</parameter></term>
 <listitem>
     <para>
-        Le chemin d'accès à la police TrueType que vous souhaitez utiliser.
+        Le chemin d&apos;accès à la police TrueType que vous souhaitez utiliser.
     </para>
     <para>
         Selon la version de la bibliothèque GD que PHP utilise, <emphasis>quand
         <parameter>fontfile</parameter> ne commence pas par une premier
         <literal>/</literal> alors <literal>.ttf</literal> sera ajouté</emphasis>
         au nom de fichier et la bibliothèque essaiera de rechercher ce nom de
-        fichier le long d'un chemin de police défini par la bibliothèque.
+        fichier le long d&apos;un chemin de police défini par la bibliothèque.
     </para>
     <para>
         Lorsque vous utilisez des versions de la bibliothèque GD inférieure à
-        2.0.18, un caractère <literal>espace</literal>, plutôt qu'un
-        point-virgule, a été utilisé comme séparateur de chemin d'accès pour
-        différents fichiers de police. L'utilisation involontaire de cette
-        fonctionnalité se traduira par le message d'avertissement: <literal>
+        2.0.18, un caractère <literal>espace</literal>, plutôt qu&apos;un
+        point-virgule, a été utilisé comme séparateur de chemin d&apos;accès pour
+        différents fichiers de police. L&apos;utilisation involontaire de cette
+        fonctionnalité se traduira par le message d&apos;avertissement: <literal>
         Avertissement: impossible de trouver/ouvrir la police</literal>. Pour
         ces versions affectées, la seule solution consiste à déplacer la police
-        vers un chemin qui ne contient pas d'espaces.
+        vers un chemin qui ne contient pas d&apos;espaces.
     </para>
     <para>
         Dans de nombreux cas où une police réside dans le même répertoire que le
-        script en l'utilisant l'astuce suivante permettra d'atténuer les
-        problèmes d'inclusion.
+        script en l&apos;utilisant l&apos;astuce suivante permettra d&apos;atténuer les
+        problèmes d&apos;inclusion.
         <programlisting role='php'>
             <![CDATA[
 <?php
@@ -1599,12 +1649,6 @@ Voir aussi <function>date_default_timezone_set</function></para>'>
 <!ENTITY dom.node.inserted 'Ce nœud ne sera pas affiché dans le document,
         à moins qu&#39;il ne soit inséré avec <function xmlns="http://docbook.org/ns/docbook">DOMNode::appendChild</function>.'>
 
-<!ENTITY dom.allowstatic '<para xmlns="http://docbook.org/ns/docbook">
-Antérieur à PHP 8.0.0, cette méthode <emphasis>peut</emphasis> être appelée statiquement,
-mais émettra un diagnostic <constant>E_DEPRECATED</constant>.
-À partir de PHP 8.0.0, appeler cette méthode statiquement lancera une exception <classname>Error</classname>.
-</para>'>
-
 <!ENTITY dom.malformederror '<para xmlns="http://docbook.org/ns/docbook">Bien que le HTML mal-formé devrait se charger avec succès, cette fonction peut générer
 une alerte de type <constant>E_WARNING</constant> lorsqu&#39;elle rencontre une mauvaise balise.
 <link linkend="function.libxml-use-internal-errors">Les fonctions de gestion des erreurs libxml</link>
@@ -1954,11 +1998,9 @@ Lève une exception <classname>PDOException</classname> si l&#39;attribut <const
 </para>'>
 
 <!-- PECL entities -->
-<!ENTITY pecl.moved 'Cette extension <link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link>
-        n&#39;est pas intégrée à PHP.'>
+<!ENTITY pecl.moved 'Cette extension &link.pecl; n&#39;est pas intégrée à PHP.'>
 
-<!ENTITY pecl.bundled 'Cette extension <link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link>
-        est intégrée à PHP.'>
+<!ENTITY pecl.bundled 'Cette extension &link.pecl; est intégrée à PHP.'>
 
 <!ENTITY pecl.info 'Des informations sur l&#39;installation de ces extensions PECL
         peuvent être trouvées dans le chapitre du manuel intitulé <link xmlns="http://docbook.org/ns/docbook" linkend="install.pecl">Installation
@@ -1985,8 +2027,7 @@ des extensions PECL</link>. D&#39;autres informations comme les notes sur les no
 
 <!ENTITY pecl.windows.download.unbundled '&pecl.windows.download;'>
 
-<!ENTITY pecl.moved-ver 'Cette extension a été déplacée dans le module
-<link xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="&url.pecl;">PECL</link> et ne sera plus intégrée dans PHP à partir de PHP '>
+<!ENTITY pecl.moved-ver 'Cette extension a été déplacée dans le module &link.pecl; et ne sera plus intégrée dans PHP à partir de PHP '>
 
 <!-- PGSQL entities -->
 
@@ -2935,10 +2976,10 @@ xmlns="http://docbook.org/ns/docbook"><simpara xmlns="http://docbook.org/ns/docb
 <!ENTITY mongo.command.parameters.maxtimems '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"maxTimeMS"</literal></para><para>Spécifie une limite cumulative de temps, en millisecondes, pour procéder à l&#39;opération (n&#39;inclut pas le temps d&#39;inactivité). Si l&#39;opération n&#39;est pas terminée durant cette période, une exception <classname>MongoExecutionTimeoutException</classname> sera émise.</para></listitem>'>
 <!ENTITY mongo.index.parameters.background '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"background"</literal></para><para>Construit l&#39;index en arrière plan faisant ainsi que la construction de l&#39;index <emphasis>ne bloquera pas</emphasis> les autres activités de la base de données. Spécifiez &true; pour une construction en arrière plan. La valeur par défaut est &false;.</para><warning xmlns="http://docbook.org/ns/docbook"><para>Avant MongoDB 2.6.0, les constructions d&#39;index sur les secondaires étaient exécutés comme des opérations de premier plan, sans respecter cette option. Voir <link xlink:href="&url.mongodb.dochub.indexes.rs;" xmlns:xlink="http://www.w3.org/1999/xlink">la construction d&#39;index sur les jeux de réplication</link> pour plus d&#39;informations.</para></warning></listitem>'>
 <!ENTITY mongo.index.parameters.dropdups '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"dropDups"</literal></para><para>Spécifiez &true; pour forcer la création d&#39;un index unique lorsque la collection peut contenir des valeurs dupliqués pour une même clé. MongoDB va indexer la première occurrence dans la clé et supprimer les documents suivants dans la collection qui contiennent une valeur dupliquée pour cette clé. La valeur par défaut est &false;.</para><warning xmlns="http://docbook.org/ns/docbook"><para><literal>"dropDups"</literal> peut supprimer des données dans votre base de données. A utiliser avec une extrême attention.</para></warning><note xmlns="http://docbook.org/ns/docbook"><para>Cette option n&#39;est pas supporté sur MongoDB 2.8+. La création d&#39;index sera refusé si la collection contient des clés dupliquées.</para></note></listitem>'>
-<!ENTITY mongo.index.parameters.expireafterseconds '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"expireAfterSeconds"</literal></para><para>La valeur de cette option doit spécifier le nombre de secondes après lequel un document doit être considéré comme expiré, et automatiquement supprimé de la collection. Cette option n&#39;est compatible qu&#39;avec des indexes sur un seul champ où le champ contient une valeur <classname>MongoDate</classname>.</para><note xmlns="http://docbook.org/ns/docbook"><para>Cette fonctionnalité est disponible depuis MongoDB 2.2+. Voir <link xlink:href="&url.mongodb.docs.expire_data;" xmlns:xlink="http://www.w3.org/1999/xlink">l&#39;expiration des données d&#39;une collection en définissant un TTL</link> pour plus d&#39;informations.</para></note></listitem>'>
-<!ENTITY mongo.index.parameters.name '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"name"</literal></para><para>Un nom optionnel qui identifie de façon unique l&#39;index.</para><note xmlns="http://docbook.org/ns/docbook"><para>Par défaut, le driver va générer un nom d&#39;index basé sur le(s) champ(s) d&#39;index, leur tri, ou leur type. Par exemple, un index calculé <literal>array("x" => 1, "y" => -1)</literal> sera nommé <literal>"x_1_y_-1"</literal> et un index géospacial <literal>array("loc" => "2dsphere")</literal> sera nommé <literal>"loc_2dsphere"</literal>. Pour les indexes avec beaucoup de champs, il est possible que le nom généré puisse excéder la <link xlink:href="&url.mongodb.docs.limits;#Index-Name-Length" xmlns:xlink="http://www.w3.org/1999/xlink">limite des noms d&#39;index</link> MongoDB. L&#39;option <literal>"name"</literal> peut être utilisée dans ce cas pour fournir un nom plus court.</para></note></listitem>'>
+<!ENTITY mongo.index.parameters.expireafterseconds '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"expireAfterSeconds"</literal></para><para>La valeur de cette option doit spécifier le nombre de secondes après lequel un document doit être considéré comme expiré, et automatiquement supprimé de la collection. Cette option n&#39;est compatible qu&#39;avec des index sur un seul champ où le champ contient une valeur <classname>MongoDate</classname>.</para><note xmlns="http://docbook.org/ns/docbook"><para>Cette fonctionnalité est disponible depuis MongoDB 2.2+. Voir <link xlink:href="&url.mongodb.docs.expire_data;" xmlns:xlink="http://www.w3.org/1999/xlink">l&#39;expiration des données d&#39;une collection en définissant un TTL</link> pour plus d&#39;informations.</para></note></listitem>'>
+<!ENTITY mongo.index.parameters.name '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"name"</literal></para><para>Un nom optionnel qui identifie de façon unique l&#39;index.</para><note xmlns="http://docbook.org/ns/docbook"><para>Par défaut, le driver va générer un nom d&#39;index basé sur le(s) champ(s) d&#39;index, leur tri, ou leur type. Par exemple, un index calculé <literal>array("x" => 1, "y" => -1)</literal> sera nommé <literal>"x_1_y_-1"</literal> et un index géospacial <literal>array("loc" => "2dsphere")</literal> sera nommé <literal>"loc_2dsphere"</literal>. Pour les index avec beaucoup de champs, il est possible que le nom généré puisse excéder la <link xlink:href="&url.mongodb.docs.limits;#Index-Name-Length" xmlns:xlink="http://www.w3.org/1999/xlink">limite des noms d&#39;index</link> MongoDB. L&#39;option <literal>"name"</literal> peut être utilisée dans ce cas pour fournir un nom plus court.</para></note></listitem>'>
 <!ENTITY mongo.index.parameters.sparse '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"sparse"</literal></para><para>Spécifiez &true; pour créer un index clairsemé, qui n&#39;indexe que des documents contenant un champ spécifié. La valeur par défaut est &false;.</para></listitem>'>
-<!ENTITY mongo.index.parameters.unique '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"unique"</literal></para><para>Spécifiez &true; pour créer un index unique. La valeur par défaut est &false;. Cette option s&#39;applique uniquement sur les indexes croissants/décroissants.</para><note xmlns="http://docbook.org/ns/docbook"><para>Lorsque MongoDB indexe un champ, si un document n&#39;a pas une valeur pour ce champ, la valeur &null; sera indexée. Si plusieurs documents ne contiennent pas un champ, un index unique rejètera tout, sauf le premier de ces documents. L&#39;option <literal>"sparse"</literal> peut être utilisée pour remédier à cela, sachant qu&#39;il va éviter que les documents ne contenant pas ce champ ne soient indexés.</para></note></listitem>'>
+<!ENTITY mongo.index.parameters.unique '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"unique"</literal></para><para>Spécifiez &true; pour créer un index unique. La valeur par défaut est &false;. Cette option s&#39;applique uniquement sur les index croissants/décroissants.</para><note xmlns="http://docbook.org/ns/docbook"><para>Lorsque MongoDB indexe un champ, si un document n&#39;a pas une valeur pour ce champ, la valeur &null; sera indexée. Si plusieurs documents ne contiennent pas un champ, un index unique rejètera tout, sauf le premier de ces documents. L&#39;option <literal>"sparse"</literal> peut être utilisée pour remédier à cela, sachant qu&#39;il va éviter que les documents ne contenant pas ce champ ne soient indexés.</para></note></listitem>'>
 <!ENTITY mongo.listcollections.note '<note xmlns="http://docbook.org/ns/docbook"><simpara>Cette méthode va utiliser la commande de base de données <link xlink:href="&url.mongodb.docs.command;listCollections" xmlns:xlink="http://www.w3.org/1999/xlink">listCollections</link> lors des communications avec MongoDB 2.8+. Pour les versions précédentes, la méthode va interroger la collection spéciale <literal>system.namespaces</literal>.</simpara></note>'>
 <!ENTITY mongo.listcollections.parameters.filter '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"filter"</literal></para><para>Critère de requête optionnel. Si fourni, ce critère sera utilisé pour filtrer les collections inclues dans le résultat.</para><para>Les champs pertinents qui peuvent être requêtés inclus <literal>"name"</literal> (nom de la collection comme chaine de caractères, sans préfixer par le nom de la base de données) et <literal>"options" (objet contenant les options utilisées pour créér la collection).</literal>.</para><note><simpara>MongoDB 2.6 et les versions antérieures requièrent que le critère <literal>"name"</literal>, si spécifié, soit une chaine de caractères (i.e. correspondance exacte). Ceci, car le driver doit préfixer la valeur avec le nom de la base de données afin de requêter la collection <literal>system.namespaces</literal>. Les versions suivantes de MongoDB n&#39;ont pas cette limitation, comme le driver va utiliser la commande listCollections.</simpara></note></listitem>'>
 <!ENTITY mongo.listcollections.parameters.includesystemcollections '<listitem xmlns="http://docbook.org/ns/docbook"><para><literal>"includeSystemCollections"</literal></para><para>Booléen, par défaut &false;. Détermine si les collections systèmes doivent être incluses dans le résultat.</para></listitem>'>
@@ -3043,7 +3084,7 @@ vous devriez utiliser l&#39;extension <link linkend="set.mongodb">MongoDB</link>
          <row xmlns="http://docbook.org/ns/docbook">
           <entry>keyVaultNamespace</entry>
           <entry>&string;</entry>
-          <entry>Un nom d&apos;espace complètement qualifié (par exemple <literal>"databaseName.collectionName"</literal>) dénotant la collection qui contient toutes les clés de données utilisé pour le chiffrement et déchiffrement.</entry>
+          <entry>Un nom d&apos;espace complètement qualifié (par exemple <literal>"databaseName.collectionName"</literal>) dénotant la collection qui contient toutes les clés de données utilisé pour le chiffrement et déchiffrement. Cette option est requise.</entry>
          </row>
 '>
 <!ENTITY mongodb.option.encryption.kmsProviders '
@@ -3404,6 +3445,184 @@ local: {
 </listitem>
 </varlistentry>
 '>
+<!ENTITY mongodb.parameter.encryptOpts '
+<varlistentry xmlns="http://docbook.org/ns/docbook">
+  <term>
+    <parameter>options</parameter>
+  </term>
+  <listitem>
+    <para>
+      <table>
+        <title>Options de chiffrement</title>
+        <tgroup cols="3">
+          <thead>
+            <row>
+              <entry>Option</entry>
+              <entry>Type</entry>
+              <entry>Description</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry>algorithm</entry>
+              <entry>
+                <type>string</type>
+              </entry>
+              <entry>
+                <para>
+                  L&apos;algorithme de chiffrement à utiliser. Cette option est requise. Spécifiez l&apos;une des constantes suivantes de
+                  <link linkend="mongodb-driver-clientencryption.constants">ClientEncryption</link> :
+                </para>
+                <simplelist>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::AEAD_AES_256_CBC_HMAC_SHA_512_DETERMINISTIC</constant>
+                  </member>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::AEAD_AES_256_CBC_HMAC_SHA_512_RANDOM</constant>
+                  </member>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_INDEXED</constant>
+                  </member>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_UNINDEXED</constant>
+                  </member>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE_PREVIEW</constant>
+                  </member>
+                </simplelist>
+              </entry>
+            </row>
+            <row>
+              <entry>contentionFactor</entry>
+              <entry>
+                <type>int</type>
+              </entry>
+              <entry>
+                <para>
+                  Le facteur de contention pour évaluer les requêtes avec des charges utiles chiffrées indexées.
+                </para>
+                <para>
+                  Cette option s&apos;applique uniquement et ne peut être spécifiée que lorsque
+                  <literal>algorithm</literal> est
+                  <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_INDEXED</constant> ou
+                  <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE_PREVIEW</constant>.
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>keyAltName</entry>
+              <entry>
+                <type>string</type>
+              </entry>
+              <entry>
+                <para>
+                  Identifie un document de collection de coffre à clés par <literal>keyAltName</literal>. Cette option est mutuellement exclusive
+                  avec <literal>keyId</literal> et l&apos;une des deux est requise.
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>keyId</entry>
+              <entry>
+                <classname>MongoDB\BSON\Binary</classname>
+              </entry>
+              <entry>
+                <para>
+                  Identifie une clé de données par <literal>_id</literal>. La valeur est un UUID (sous-type binaire 4). Cette option est mutuellement
+                  exclusive avec <literal>keyAltName</literal> et l&apos;une des deux est requise.
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>queryType</entry>
+              <entry>
+                <type>int</type>
+              </entry>
+              <entry>
+                <para>
+                  Le type de requête pour évaluer les requêtes avec des charges utiles chiffrées indexées. Spécifiez l&apos;une des constantes suivantes de
+                  <link linkend="mongodb-driver-clientencryption.constants">ClientEncryption</link> :
+                </para>
+                <simplelist>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::QUERY_TYPE_EQUALITY</constant>
+                  </member>
+                  <member>
+                    <constant>MongoDB\Driver\ClientEncryption::QUERY_TYPE_RANGE_PREVIEW</constant>
+                  </member>
+                </simplelist>
+                <para>
+                  Cette option s&apos;applique uniquement et ne peut être spécifiée que lorsque
+                  <literal>algorithm</literal> est
+                  <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_INDEXED</constant> ou
+                  <constant>MongoDB\Driver\ClientEncryption::ALGORITHM_RANGE_PREVIEW</constant>.
+                </para>
+              </entry>
+            </row>
+            <row>
+              <entry>rangeOpts</entry>
+              <entry>
+                <type>array</type>
+              </entry>
+              <entry>
+                <para>
+                  Options d&apos;index pour un champ de chiffrement interrogeable prenant en charge les requêtes "rangePreview". Les options ci-dessous doivent correspondre
+                  aux valeurs définies dans <literal>encryptedFields</literal> de la collection cible. Pour les types de champ BSON double et decimal128,
+                  <literal>min</literal>, <literal>max</literal> et <literal>precision</literal> doivent être tous définis ou tous non définis.
+                </para>
+                <para>
+                  <table>
+                    <title>Options d&apos;index de plage</title>
+                    <tgroup cols="3">
+                      <thead>
+                        <row>
+                          <entry>Option</entry>
+                          <entry>Type</entry>
+                          <entry>Description</entry>
+                        </row>
+                      </thead>
+                      <tbody>
+                        <row>
+                          <entry>min</entry>
+                          <entry>
+                            <type>mixed</type>
+                          </entry>
+                          <entry>Requis si <literal>precision</literal> est défini.</entry>
+                        </row>
+                        <row>
+                          <entry>max</entry>
+                          <entry>
+                            <type>mixed</type>
+                          </entry>
+                          <entry>Requis si <literal>precision</literal> est défini.</entry>
+                        </row>
+                        <row>
+                          <entry>sparsity</entry>
+                          <entry>
+                            <type>int</type>
+                          </entry>
+                          <entry>Requis.</entry>
+                        </row>
+                        <row>
+                          <entry>precision</entry>
+                          <entry>
+                            <type>int</type>
+                          </entry>
+                          <entry>Facultatif. Ne peut être défini que pour les types de champ BSON double ou decimal128.</entry>
+                        </row>
+                      </tbody>
+                    </tgroup>
+                  </table>
+                </para>
+              </entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </para>
+  </listitem>
+</varlistentry>
+'>
 <!ENTITY mongodb.parameter.query '
 <varlistentry xmlns="http://docbook.org/ns/docbook">
 <term><parameter>query</parameter> (<classname>MongoDB\Driver\Query</classname>)</term>
@@ -3450,15 +3669,8 @@ local: {
 <!ENTITY mongodb.throws.connection '<member xmlns="http://docbook.org/ns/docbook">Lance une exception <classname>MongoDB\Driver\ConnectionException</classname> si la connexion au serveur échoue pour une autre raison qu&#39;en raison d&#39;un problème d&#39;identification</member>'>
 <!ENTITY mongodb.throws.bson.unexpected '<member xmlns="http://docbook.org/ns/docbook">Lance une exception <classname>MongoDB\Driver\Exception\UnexpectedValueException</classname> si l&#39;entrée ne contient pas exactement un document BSON. Les raisons possibles comprennent, mais ne sont pas limitées à, BSON invalide, des données supplémentaires (après avoir lu un document BSON), ou une erreur imprévu de <link xlink:href="&url.mongodb.libbson;" xmlns:xlink="http://www.w3.org/1999/xlink">libbson</link>.</member>'>
 
-<!ENTITY mongodb.note.queryable-encryption-preview '
- <note xmlns="http://docbook.org/ns/docbook">
-  <simpara>
-    Queryable Encryption est en version publique et disponible à des fins d&#39;évaluation.
-    Il n&#39;est pas encore recommandé pour les déploiements de production car des changements incompatibles peuvent être introduits.
-    Voir l&#39;article du blog <link xlink:href="https://www.mongodb.com/blog/post/mongodb-releases-queryable-encryption-preview/" xmlns:xlink="http://www.w3.org/1999/xlink">Queryable Encryption Preview</link> pour plus d&#39;informations.
-  </simpara>
- </note>
-'>
+<!-- Not used in EN anymore -->
+<!ENTITY mongodb.note.queryable-encryption-preview ''>
 
 <!ENTITY mongodb.note.decimal128 '
 <note xmlns="http://docbook.org/ns/docbook">
@@ -3679,16 +3891,20 @@ a été définie de façon incorrecte pour l&#39;entrée fournie.
   <formalpara>
    <title>Largeur</title>
    <para>
-    Un entier indiquant combien de caractères (au minimum)
-    cette conversion doit avoir pour résultat.
+    Soit un entier indiquant le nombre de caractères (minimum)
+    que cette conversion doit produire, soit <literal>*</literal>.
+    Si <literal>*</literal> est utilisé, alors la largeur est fournie
+    en tant que valeur entière supplémentaire précédant celle formatée
+    par le spécificateur.
    </para>
   </formalpara>
 
   <formalpara>
    <title>Precision</title>
    <para>
-    Un point <literal>.</literal> suivie d&apos;un entier dont
-    sa signification dépend du spécificateur :
+    Un point <literal>.</literal> suivi optionnellement
+    soit d&apos;un entier, soit de <literal>*</literal>,
+    dont la signification dépend du spécificateur :
     <itemizedlist>
      <listitem>
       <simpara>
@@ -3716,18 +3932,13 @@ a été définie de façon incorrecte pour l&#39;entrée fournie.
     <note>
      <simpara>
       Si le point est spécifié sans une valeur explicite pour la précision,
-      0 est assumé.
+      0 est assumé. Si <literal>*</literal> est utilisé, la précision est
+      fournie en tant que valeur entière supplémentaire précédant celle formatée
+      par le spécificateur.
      </simpara>
     </note>
    </para>
   </formalpara>
-
-  <note>
-   <simpara>
-    Tenter d&apos;utiliser une position supérieure à
-    <constant>PHP_INT_MAX</constant> génèrera une alerte.
-   </simpara>
-  </note>
 
   <para>
    <table>
@@ -3985,6 +4196,13 @@ a été définie de façon incorrecte pour l&#39;entrée fournie.
  </para>
 '>
 
+<!ENTITY strings.changelog.needle-empty '<row xmlns="http://docbook.org/ns/docbook">
+ <entry>8.0.0</entry>
+ <entry>
+  <parameter>needle</parameter> accepte désormais une chaîne vide.
+ </entry>
+</row>'>
+
 <!ENTITY strings.changelog.encoding '
 <row xmlns="http://docbook.org/ns/docbook">
 <entry>5.6.0</entry>
@@ -4017,6 +4235,121 @@ a été définie de façon incorrecte pour l&#39;entrée fournie.
  </row>
 '>
 
+<!ENTITY strings.changelog.sprintf '
+  <informaltable xmlns="http://docbook.org/ns/docbook">
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Cette fonction ne renvoie plus &false; en cas d&apos;échec.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ValueError</classname> si le nombre d&apos;arguments est zéro ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ValueError</classname> si <literal>[width]</literal> est inférieur à zéro ou supérieur à <constant>PHP_INT_MAX</constant> ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ValueError</classname> si <literal>[precision]</literal> est inférieur à zéro ou supérieur à <constant>PHP_INT_MAX</constant> ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ArgumentCountError</classname> lorsque moins d&apos;arguments sont donnés que requis ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+'>
+<!ENTITY strings.changelog.vsprintf '
+  <informaltable xmlns="http://docbook.org/ns/docbook">
+   <tgroup cols="2">
+    <thead>
+     <row>
+      <entry>&Version;</entry>
+      <entry>&Description;</entry>
+     </row>
+    </thead>
+    <tbody>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Cette fonction ne renvoie plus &false; en cas d&apos;échec.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ValueError</classname> si le nombre d&apos;arguments est zéro ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ValueError</classname> si <literal>[width]</literal> est inférieur à zéro ou supérieur à <constant>PHP_INT_MAX</constant> ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ValueError</classname> si <literal>[precision]</literal> est inférieur à zéro ou supérieur à <constant>PHP_INT_MAX</constant> ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+     <row>
+      <entry>8.0.0</entry>
+      <entry>
+       Lance une <classname>ArgumentCountError</classname> lorsque moins d&apos;arguments sont donnés que requis ;
+       auparavant, cette fonction émettait un <constant>E_WARNING</constant>.
+      </entry>
+     </row>
+    </tbody>
+   </tgroup>
+  </informaltable>
+'>
+<!ENTITY strings.errors.sprintf '
+  <para xmlns="http://docbook.org/ns/docbook">
+À partir de PHP 8.0.0, une <classname>ValueError</classname> est lancée si le nombre d&apos;arguments est nul.
+Antérieur à PHP 8.0.0, un <constant>E_WARNING</constant> était émis à la place.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+À partir de PHP 8.0.0, une <classname>ValueError</classname> est lancée si <literal>[width]</literal> est inférieur à zéro ou supérieur à <constant>PHP_INT_MAX</constant>.
+Antérieur à PHP 8.0.0, un <constant>E_WARNING</constant> était émis à la place.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+À partir de PHP 8.0.0, une <classname>ValueError</classname> est lancée si <literal>[precision]</literal> est inférieur à zéro ou supérieur à <constant>PHP_INT_MAX</constant>.
+Antérieur à PHP 8.0.0, un <constant>E_WARNING</constant> était émis à la place.
+</para>
+<para xmlns="http://docbook.org/ns/docbook">
+À partir de PHP 8.0.0, une <classname>ArgumentCountError</classname> est lancée lorsque moins d&apos;arguments sont donnés que requis.
+Antérieur à PHP 8.0.0, &false; était retourné et un <constant>E_WARNING</constant> était émis à la place.
+</para>
+'>
+
 <!-- filter snippets -->
 <!ENTITY filter.param.filter '
 <varlistentry xmlns="http://docbook.org/ns/docbook">
@@ -4037,34 +4370,66 @@ a été définie de façon incorrecte pour l&#39;entrée fournie.
 <!-- csprng snippets -->
 <!ENTITY csprng.sources '
 <para xmlns="http://docbook.org/ns/docbook">
-La source des données aléatoires utilisée pour cette fonction est :
+Les sources de hasard par ordre de priorité sont les suivantes :
 </para>
 <itemizedlist xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
 <listitem>
+  <para>
+   Linux: <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+</listitem>
+<listitem>
+   <para>
+   FreeBSD &gt;= 12 (PHP &gt;= 7.3): <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   Windows (PHP &gt;= 7.2): <link xlink:href="&url.csprng.cng-api;">CNG-API</link>
+  </para>
+  <para>
+   Windows: <link xlink:href="&url.csprng.crypt-gen-random;">CryptGenRandom</link>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   macOS (PHP &gt;= 8.2; &gt;= 8.1.9; &gt;= 8.0.22 si CCRandomGenerateBytes est disponible au moment de la compilation): CCRandomGenerateBytes()
+  </para>
+  <para>
+   macOS (PHP &gt;= 8.1; &gt;= 8.0.2): arc4random_buf(), <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   NetBSD &gt;= 7 (PHP &gt;= 7.1; &gt;= 7.0.1): arc4random_buf(), <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   OpenBSD &gt;= 5.5 (PHP &gt;= 7.1; &gt;= 7.0.1): arc4random_buf(), <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   DragonflyBSD (PHP &gt;= 8.1): <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+ </listitem>
+ <listitem>
+  <para>
+   Solaris (PHP &gt;= 8.1): <link xlink:href="&url.csprng.get-random-2;">getrandom()</link>, <filename>/dev/urandom</filename>
+  </para>
+</listitem>
+<listitem>
     <simpara>
-        Sous Windows,
-        <link xlink:href="&url.csprng.crypt-gen-random;"><function>CryptGenRandom</function></link>
-        sera toujours utilisé. À partir de PHP 7.2.0 c&#39;est
-        <link xlink:href="&url.csprng.cng-api;">CNG-API</link>
-        qui sera toujours utilisé à la place
+      Toute combinaison d&apos;un système d&apos;exploitation et d&apos;une version de PHP non mentionnée précédemment:
+      <filename>/dev/urandom</filename>.
     </simpara>
 </listitem>
 <listitem>
     <simpara>
-        Sous Linux, l&#39;appel système
-        <link xlink:href="&url.csprng.get-random-2;">getrandom(2)</link>
-        sera utilisé si disponible.
-    </simpara>
-</listitem>
-<listitem>
-    <simpara>
-        Sous les autres plate-formes, <filename>/dev/urandom</filename> sera utilisé.
-    </simpara>
-</listitem>
-<listitem>
-    <simpara>
-        Si tout ce qui précède n&#39;est pas disponible, alors une
-        <classname>Random\RandomException</classname> sera lancée.
+      Si aucune des sources de hasard n&apos;est disponible ou si elles échouent toutes à générer
+      de l&apos;aléatoire, une exception de type <classname>Random\RandomException</classname>
+      sera levée.
     </simpara>
 </listitem>
 </itemizedlist>

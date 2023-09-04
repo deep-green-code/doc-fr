@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 02ff7fef5b34cf8f5395180d9d39fb64d9398d00 Maintainer: victor-prdh Status: ready -->
+<!-- EN-Revision: 280c1486811039092af54aa172a05417372bebb9 Maintainer: victor-prdh Status: ready -->
 <!-- Reviewed: no -->
 <refentry xml:id="datetimeimmutable.createfromformat" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  <refnamediv>
@@ -34,7 +34,7 @@
   </para>
  </refsect1>
 
- <refsect1 role="parameters">
+ <refsect1 role="parameters" xml:id="datetimeimmutable.createfromformat.parameters">
   &reftitle.parameters;
   <variablelist>
    <varlistentry>
@@ -305,8 +305,8 @@
          </row>
          <row>
           <entry><literal> </literal> (espace)</entry>
-          <entry>Un espace ou une tabulation</entry>
-          <entry>Exemple : <literal> </literal></entry>
+          <entry>Zéro ou plusieurs espaces, tabulations, caractères NBSP (U+A0), ou NNBSP (U+202F)</entry>
+          <entry>Exemple: <literal>"\t"</literal>, <literal>"  "</literal></entry>
          </row>
          <row>
           <entry><literal>#</literal></entry>
@@ -437,12 +437,22 @@
    </varlistentry>
   </variablelist>
  </refsect1>
+
  <refsect1 role="returnvalues">
   &reftitle.returnvalues;
   <para>
    Retourne un nouvel objet <classname>DateTimeImmutable</classname>&return.falseforfailure;.
   </para>
  </refsect1>
+
+ <refsect1 role="errors">
+  &reftitle.errors;
+  <para>
+   Cette méthode lance une <exceptionname>ValueError</exceptionname> lorsque le
+   <parameter>datetime</parameter> contient des octets NULL.
+  </para>
+ </refsect1>
+
  <refsect1 role="changelog">
   &reftitle.changelog;
   <para>
@@ -456,10 +466,25 @@
      </thead>
      <tbody>
       <row>
+       <entry>8.2.9</entry>
+       <entry>
+        Le spécificateur <literal> </literal> (espace) prend désormais également
+        en charge les caractères NBSP (U+A0) et NNBSP (U+202F).
+       </entry>
+      </row>
+      <row>
        <entry>8.2.0</entry>
        <entry>
         Les spécificateurs <literal>X</literal> et <literal>x</literal>
         <parameter>format</parameter> ont été ajoutés.
+       </entry>
+      </row>
+      <row>
+       <entry>8.0.21, 8.1.8, 8.2.0</entry>
+       <entry>
+         Lance désormais une <exceptionname>ValueError</exceptionname> lorsque des octets NULL
+         sont passés dans <parameter>datetime</parameter>, ce qui était auparavant ignoré
+         silencieusement.
        </entry>
       </row>
       <row>
@@ -473,6 +498,7 @@
    </informaltable>
   </para>
  </refsect1>
+
  <refsect1 role="examples">
   &reftitle.examples;
   <example>
@@ -487,6 +513,32 @@ echo $date->format('Y-m-d');
 ]]>
    </programlisting>
   </example>
+
+  <example>
+   <title>Utilisation des constantes de format prédéfinies avec <function>DateTimeImmutable::createFromFormat</function></title>
+   <para>&style.oop;</para>
+   <programlisting role="php">
+<![CDATA[
+<?php
+$date = DateTimeImmutable::createFromFormat(DateTimeInterface::ISO8601, '2004-02-12T15:19:21+00:00');
+$date = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, '2013-10-14T09:00:00.000+02:00');
+?>
+]]>
+   </programlisting>
+   <para>
+    Les <link linkend="datetimeinterface.constants.types">constantes de formatage</link> utilisées dans cet exemple consistent en une chaîne de caractères pour <link linkend="datetime.format">formater</link> un objet <classname>DateTimeImmutable</classname>. Dans la plupart des cas, ces lettres correspondent aux mêmes éléments d'information sur la date et l'heure que ceux définis dans la section <link linkend="datetimeimmutable.createfromformat.parameters">parameters</link> ci-dessus, mais elles ont tendance à être plus indulgentes.
+
+
+    Les <link linkend="datetimeinterface.constants.types">constantes de formatage</link>
+    telles qu'elles sont utilisées dans cet exemple consistent en
+    une chaîne de caractères pour <link linkend="datetime.format">formater</link> un
+    objet <classname>DateTimeImmutable</classname>. Dans la plupart des cas, ces
+    lettres correspondent aux mêmes éléments d'information sur la date et l'heure que ceux définis dans la section <link
+    linkend="datetimeimmutable.createfromformat.parameters">paramètres</link>
+    ci-dessus, mais elles ont tendance à être plus faciles à utiliser.
+   </para>
+  </example>
+
   <example>
    <title>Les subtilités de <function>DateTimeImmutable::createFromFormat</function></title>
    <programlisting role="php">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: ea64803aa2f6c1a3d13d9230edbc8e0900fb6528 Maintainer: yannick Status: ready -->
+<!-- EN-Revision: 8e1ff07165796c9942b5fa9378cdd680c71cb596 Maintainer: yannick Status: ready -->
 <!-- Reviewed: no Maintainer: girgias -->
 <sect1 xml:id="language.types.string">
  <title>Les chaînes de caractères</title>
@@ -263,7 +263,7 @@ echo 'Les variables ne seront pas $traitees $ici';
 
 
    <example>
-    <title>Example Heredoc basique à partir de PHP 7.3.0</title>
+    <title>Exemple Heredoc basique à partir de PHP 7.3.0</title>
     <programlisting role="php">
      <![CDATA[
 <?php
@@ -371,7 +371,7 @@ PHP Parse error:  Invalid indentation - tabs and spaces cannot be mixed in examp
 
    <simpara>
     L'identifiant de fin du corps du texte n'est pas requis d'être suivi
-    d'une point virgule ou une nouvelle ligne. Par example, le code suivant
+    d'une point virgule ou une nouvelle ligne. Par exemple, le code suivant
     est autorisé à partir de PHP 7.3.0:
    </simpara>
 
@@ -437,7 +437,7 @@ PHP Parse error:  syntax error, unexpected identifier "ING", expecting "]" in ex
 
     <simpara>
      Pour éviter ce problème, il suffit de suivre cette règle simple :
-     <emphasis>ne pas choisir l'identifiant de fin qui apparait dans le
+     <emphasis>ne pas choisir comme identifiant de fin si ceci apparait dans le
      corps du texte</emphasis>.
     </simpara>
 

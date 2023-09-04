@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: c44475e1fafcbee203ed4935a6d5d7a01379fcdc Maintainer: yannick Status: ready -->
+<!-- EN-Revision: c992cd3eb5c4a030697c2f126cf023041b923944 Maintainer: yannick Status: ready -->
 <!-- Reviewed: yes Maintainer: pmartin -->
 <refentry xml:id="function.class-alias" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -46,8 +46,8 @@
      <term><parameter>autoload</parameter></term>
      <listitem>
       <para>
-       Si l'on doit charger automatiquement si la classe originale
-       n'est pas trouvée.
+       Si l'on doit <link linkend="language.oop5.autoload">charger automatiquement</link>
+       si la classe originale n'est pas trouvée.
       </para>
      </listitem>
     </varlistentry>
@@ -70,23 +70,23 @@
 <![CDATA[
 <?php
 
-class foo { }
+class Foo { }
 
-class_alias('foo', 'bar');
+class_alias('Foo', 'Bar');
 
-$a = new foo;
-$b = new bar;
+$a = new Foo;
+$b = new Bar;
 
 // les objets sont les mêmes
 var_dump($a == $b, $a === $b);
 var_dump($a instanceof $b);
 
 // les classes sont les mêmes
-var_dump($a instanceof foo);
-var_dump($a instanceof bar);
+var_dump($a instanceof Foo);
+var_dump($a instanceof Bar);
 
-var_dump($b instanceof foo);
-var_dump($b instanceof bar);
+var_dump($b instanceof Foo);
+var_dump($b instanceof Bar);
 
 ?>
 ]]>
@@ -106,6 +106,18 @@ bool(true)
    </example>
   </para>
  </refsect1>
+ <refsect1 role="notes">
+  &reftitle.notes;
+  <note>
+   <para>
+    Les noms de classes ne sont pas sensibles à la casse en PHP, et cela se reflète dans cette
+    fonction. Les alias créés par <function>class_alias</function> sont déclarés
+    en minuscules. Cela signifie que pour une classe
+    <literal>MyClass</literal>, l'appel <code>class_alias('MyClass', 'MyClassAlias')</code>
+    déclarera un nouvel alias de classe nommé <literal>myclassalias</literal>.
+   </para>
+ </note>
+</refsect1>
  <refsect1 role="seealso">
   &reftitle.seealso;
   <para>

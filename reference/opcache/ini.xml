@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 9e34a0a4732c6dae4befd79efd7de3f728c77fa5 Maintainer: yannick Status: ready -->
+<!-- EN-Revision: 9829ec03d3a65da2d4a58f2bc1c886226ee00bc1 Maintainer: yannick Status: ready -->
 <!-- Reviewed: no -->
-<sect1 xml:id="opcache.configuration" xmlns="http://docbook.org/ns/docbook">
+<sect1 xml:id="opcache.configuration" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink">
  &reftitle.runtime;
  &extension.runtime;
  <para>
@@ -486,6 +486,14 @@
       OPcache manuellement via la fonction <function>opcache_reset</function>,
       la fonction <function>opcache_invalidate</function> ou en redémarrant le serveur
       Web pour que les modifications du système de fichiers ne prennent effet.
+      <note>
+       <simpara>
+        OPcache peut toujours valider l'horodatage d'un fichier lors de la compilation si les options
+        <link linkend="ini.opcache.file_update_protection">opcache.file_update_protection</link>
+        ou <link linkend="ini.opcache.max-file-size">opcache.max_file_size</link>
+        sont définies sur des valeurs non nulles.
+       </simpara>
+      </note>
      </para>
     </listitem>
    </varlistentry>
@@ -794,8 +802,9 @@
      <para>
       Empêche la mise en cache des fichiers datant moins que ce nombre de secondes.
       Ceci protège de la mise en cache des fichiers incomplètement mis à jour.
-      Si toutes les mises à jour de fichiers sur votre site sont atomiques,
-      vous pouvez augmenter les performances en le définissant à "0".
+      Si toutes les mises à jour de fichiers sont atomiques, les performances
+      peuvent être augmenter en le définissant à <literal>0</literal>.
+      Cela permettra de mettre en cache les fichiers immédiatement.
      </para>
     </listitem>
    </varlistentry>
@@ -954,9 +963,11 @@
     </term>
     <listitem>
      <para>
-      Le code de préchargement en tant que racine n'est pas autorisé pour des 
-      raisons de sécurité. Cette directive facilite la gestion du préchargement 
-      en tant qu'utilisateur.
+      Permet au préchargement d'être exécuté en tant qu'utilisateur système 
+      spécifié. Ceci est utile pour les serveurs qui démarrent en tant que root 
+      avant de passer à un utilisateur système non privilégié. Le préchargement 
+      en tant que root n'est pas autorisé par défaut pour des raisons de sécurité, 
+      sauf si cette directive est explicitement définie sur <literal>root</literal>.
      </para>
     </listitem>
    </varlistentry>
@@ -1083,8 +1094,9 @@
     </term>
     <listitem>
      <para>
-      Un masque de bit spécifiant quel sortie de débug de JIT à activer
-      Pour les valeurs possible, consultez <filename>zend_jit.h</filename>.
+      Un masque de bit spécifiant quelle sortie de débug de JIT à activer
+      Pour les valeurs possibles, consultez <link xlink:href="&url.php.git.src.master.view;ext/opcache/jit/zend_jit.h">zend_jit.h</link>
+      (voir les définitions de macro commençant par <code>ZEND_JIT_DEBUG</code>).
      </para>
     </listitem>
    </varlistentry>

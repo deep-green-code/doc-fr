@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 60809ebcf7d0c261b2f00e093e4fab70326ffc7b Maintainer: yannick Status: ready -->
+<!-- EN-Revision: 7838e3af5aa611d439f4b7037d8c96c017852972 Maintainer: yannick Status: ready -->
 <!-- Reviewed: no -->
 <refentry xml:id="function.spl-autoload-register" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
@@ -52,8 +52,12 @@
       </para>
       <methodsynopsis>
        <type>void</type><methodname><replaceable>callback</replaceable></methodname>
-       <methodparam><type>string</type><parameter>class_name</parameter></methodparam>
+       <methodparam><type>string</type><parameter>class</parameter></methodparam>
       </methodsynopsis>
+      <para>
+       La <parameter>class</parameter> ne contiendra pas le backslash initial
+       d'un identifiant entièrement qualifié.
+      </para>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -65,6 +69,14 @@
        des exceptions lorsque le <parameter>callback</parameter>
        n'a pu être enregistré.
       </para>
+      <warning>
+        <para>
+          Ce paramètre est ignoré à partir de PHP 8.0.0, et une notice sera
+          émise s'il est défini à &false;. <function>spl_autoload_register</function>
+          lancera toujours une <classname>TypeError</classname> avec des arguments
+          non valides.
+        </para>
+      </warning>
      </listitem>
     </varlistentry>
     <varlistentry>
@@ -149,8 +161,8 @@ spl_autoload_register(function ($class) {
 namespace Foobar;
 
 class Foo {
-    static public function test($name) {
-        print '[['. $name .']]';
+    static public function test($class) {
+        print '[['. $class .']]';
     }
 }
 
@@ -166,6 +178,34 @@ new InexistentClass;
 <![CDATA[
 [[Foobar\InexistentClass]]
 Fatal error: Class 'Foobar\InexistentClass' not found in ...
+]]>
+    </screen>
+   </example>
+   <example>
+    <title>L'identifiant sera fourni sans le backslash initial.</title>
+    <programlisting role="php">
+<![CDATA[
+<?php
+
+spl_autoload_register(static function ($class) {
+    var_dump($class);
+});
+
+class_exists('RelativeName');
+class_exists('RelativeName\\WithNamespace');
+class_exists('\\AbsoluteName');
+class_exists('\\AbsoluteName\\WithNamespace');
+
+?>
+]]>
+    </programlisting>
+    &example.outputs;
+    <screen>
+<![CDATA[
+string(12) "RelativeName"
+string(26) "RelativeName\WithNamespace"
+string(12) "AbsoluteName"
+string(26) "AbsoluteName\WithNamespace"
 ]]>
     </screen>
    </example>

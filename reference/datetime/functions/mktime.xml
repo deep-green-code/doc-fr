@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- $Revision$ -->
-<!-- EN-Revision: 5c951013ca04161992efed8b86fb40f55669958e Maintainer: victor-prdh Status: ready -->
+<!-- EN-Revision: 57e27d2a7615da2ee6de57ed27eb40b473d487cb Maintainer: victor-prdh Status: ready -->
 <!-- Reviewed: no -->
 <refentry xml:id="function.mktime" xmlns="http://docbook.org/ns/docbook">
  <refnamediv>
   <refname>mktime</refname>
   <refpurpose>
-   Retourne le timestamp UNIX d'une date
+   Retourne l'horodatage UNIX d'une date
   </refpurpose>
  </refnamediv>
 
@@ -22,14 +22,14 @@
    <methodparam choice="opt"><type class="union"><type>int</type><type>null</type></type><parameter>year</parameter><initializer>&null;</initializer></methodparam>
   </methodsynopsis>
   <para>
-   <function>mktime</function> retourne un timestamp UNIX
-   correspondant aux arguments fournis. Ce timestamp est un
+   <function>mktime</function> retourne un horodatage UNIX
+   correspondant aux arguments fournis. Cet horodatage est un
    entier long, contenant le nombre de secondes entre le début
    de l'époque UNIX (1er Janvier 1970 00:00:00 GMT) et le temps
    spécifié.
   </para>
   <para>
-   Les arguments peuvent être omis, de droite à gauche,
+   Les arguments optionnels ou &null; peuvent être omis, de droite à gauche,
    et tous les arguments manquants sont utilisés avec la valeur
    courante de l'heure et du jour.
   </para>
@@ -43,8 +43,9 @@
    </para>
   </warning>
   <simpara>
-   Appeler <function>mktime</function> sans arguments est obsolète.
-   <function>time</function> peut être utilisé pour récupérer le timestamp courant.
+   Appeler <function>mktime</function> sans arguments n'est pas supporté.
+   Cela aura pour résultat de lancer une <classname>ArgumentCountError</classname>.
+   <function>time</function> peut être utilisé pour récupérer l'horodatage courant.
   </simpara>
  </refsect1>
 
@@ -133,7 +134,8 @@
  <refsect1 role="returnvalues">
   &reftitle.returnvalues; 
   <para>
-   <function>mktime</function> retourne un timestamp Unix des arguments donnés.
+   <function>mktime</function> retourne un horodatage Unix des arguments donnés,
+   ou &false; si l'horodatage ne rentre pas dans un entier PHP.
   </para>
  </refsect1>
 
@@ -153,6 +155,8 @@
        <entry>8.0.0</entry>
        <entry>
         <parameter>hour</parameter> n'est plus optionnel.
+        Pour obtenir un horodatage unix, il faudra utiliser la
+        fonction <function>time</function>.
        </entry>
       </row>
       <row>

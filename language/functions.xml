@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- EN-Revision: 2bb38497b9a1002f00ea35843c64a8417c64a0d9 Maintainer: yannick Status: ready -->
+<!-- EN-Revision: 1f8a9bbeec69c16c4b965c350525baf5744b8f4e Maintainer: yannick Status: ready -->
 <!-- Reviewed: no -->
 <chapter xml:id="language.functions" xmlns="http://docbook.org/ns/docbook">
  <title>Les fonctions</title>
@@ -426,7 +426,7 @@ Préparer un bol de yaourt à la framboise.
 <?php
 function faireunyaourt($container = "bol", $flavour = "framboise", $style = "Grec")
 {
-    return "Préparer un $container de $style yaourt à la $flavour.\n";
+    return "Préparer un $container de yaourt $style à la $flavour.\n";
 }
 echo faireunyaourt(style: "naturel");
 ?>
@@ -435,7 +435,7 @@ echo faireunyaourt(style: "naturel");
         &example.outputs;
         <screen>
 <![CDATA[
-Préparer un bol de naturel yaourt à la framboise.
+Préparer un bol de yaourt naturel à la framboise.
 ]]>
         </screen>
       </example>
@@ -709,7 +709,7 @@ array_fill(start_index: 0, count: 100, value: 50);
    </para>
 
    <example>
-    <title>Même example que ci-dessus, mais avec un ordre de paramètre différent</title>
+    <title>Même exemple que ci-dessus, mais avec un ordre de paramètre différent</title>
     <programlisting role="php">
 <![CDATA[
 <?php
